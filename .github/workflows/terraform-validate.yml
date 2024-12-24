@@ -3,7 +3,7 @@ name: Validate terraform configs
 on:
   push:
     branches:
-      - infra-features
+      - infra_features
 
 jobs:
   validate:
