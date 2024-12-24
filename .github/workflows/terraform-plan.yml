@@ -47,7 +47,7 @@ jobs:
                                    --behavior=update
 
       - name: setup terraform
-        uses: harshicorp/setup-terraform@v3
+        uses: hashicorp/setup-terraform@v3
 
       - name: terraform init
         id: init
