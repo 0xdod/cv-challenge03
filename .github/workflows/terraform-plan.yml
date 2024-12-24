@@ -70,7 +70,4 @@ jobs:
         uses: marocchino/sticky-pull-request-comment@v2
         with:
           header: terraform-plan
-          message: |
-            ```terraform
-            $(cat plan.txt)
-            ```
+          path: plan.txt
