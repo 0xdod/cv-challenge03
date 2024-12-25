@@ -25,7 +25,7 @@
     chdir: "/home/ubuntu/app"
 
 - name: Start Docker Containers
-  command: docker-compose up -f docker-compose.app.yml -d
+  command: docker-compose -f docker-compose.app.yml up -d
   become: yes
   args:
     chdir: "/home/ubuntu/app"
