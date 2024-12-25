@@ -17,6 +17,7 @@ resource "aws_instance" "web_server" {
 
   tags = {
     Name = "cv-challenge03-server"
+    Environment = "Dev"
   }
 
 }

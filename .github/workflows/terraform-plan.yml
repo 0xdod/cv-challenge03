@@ -64,6 +64,7 @@ jobs:
           TF_VAR_security_group_ids: ${{ secrets.TF_VAR_security_group_ids }}
           TF_VAR_key_name: ${{ secrets.TF_VAR_key_name }}
           TF_VAR_eip: ${{ secrets.TF_VAR_eip }}
+          TF_VAR_ec2_key_path: $GITHUB_WORKSPACE/ec2-key.pem}}
           TF_VAR_domain_name: ${{ secrets.TF_VAR_domain_name }}
 
       - name: Comment on PR
