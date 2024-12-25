@@ -16,30 +16,10 @@ jobs:
       TF_VAR_security_group_ids: ${{ secrets.TF_VAR_security_group_ids }}
       TF_VAR_key_name: ${{ secrets.TF_VAR_key_name }}
       TF_VAR_eip: ${{ secrets.TF_VAR_eip }}
-      TF_VAR_domain_name: ${{ secrets.TF_VAR_domain_name }}
-      TF_VAR_ec2_key_path: ec2-key.pem
 
     steps:
       - name: checkout PR branch
         uses: actions/checkout@v4
-
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v3
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ secrets.AWS_REGION }}
-
-      - name: Install Ansible
-        shell: bash
-        run: |
-          sudo apt update
-          sudo apt install -y ansible
-
-      - name: Decode and Save PEM File
-        run: |
-          echo "${{ secrets.EC2_SSH_KEY }}" | base64 --decode > ec2-key.pem
-          chmod 400 ec2-key.pem
 
       - name: setup terraform
         uses: hashicorp/setup-terraform@v3
@@ -51,3 +31,16 @@ jobs:
       - name: terraform apply
         id: apply
         run: terraform apply -auto-approve
+
+      - name: terraform output
+        run: |
+          terraform output instance_id > instance_id.txt
+          terraform output public_ip > public_ip.txt
+
+      - name: Upload Terraform Output
+        uses: actions/upload-artifact@v3
+        with:
+          name: terraform-output
+          path: |
+            instance_id.txt
+            public_ip.txt
