@@ -33,5 +33,5 @@ output "instance_id" {
 }
 
 output "public_ip" {
-  value = ${var.eip != null ? aws_eip_association.eip_assoc.public_ip : aws_instance.web_server.public_ip}
+  value = var.eip != null ? aws_eip_association.eip_assoc.public_ip : aws_instance.web_server.public_ip
 }
