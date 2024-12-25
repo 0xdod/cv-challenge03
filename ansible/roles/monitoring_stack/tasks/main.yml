@@ -1,0 +1,21 @@
+- name: Copy files
+  copy:
+    src: "{{ item.src }}"
+    dest: "/home/ubuntu/app/{{ item.dest }}"
+  loop:
+    - src: "docker-compose.monitoring.yml"
+      dest: "docker-compose.monitoring.yml"
+    - src: "prometheus.yml"
+      dest: "prometheus.yml"
+    - src: "loki-config.yml"
+      dest: "loki-config.yml"
+    - src: "promtail-config.yml"
+      dest: "promtail-config.yml"
+    - src: "grafana.ini"
+      dest: "grafana.ini"
+
+- name: Start Docker Containers
+  command: docker-compose up -f docker-compose.monitoring.yml -d
+  become: yes
+  args:
+    chdir: "/home/ubuntu/app"

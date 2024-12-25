@@ -1,4 +1,5 @@
 - hosts: web_servers
   become: yes
   roles:
-    - web_servers
+    - docker
+    - application_stack
