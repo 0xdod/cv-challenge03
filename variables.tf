@@ -19,13 +19,3 @@ variable "eip" {
   type        = string
   default     = null
 }
-
-variable "domain_name" {
-  description = "The domain name to use for the application."
-  type        = string
-}
-
-variable "ec2_key_path" {
-  description = "Path to the private key for the EC2 instances."
-  type        = string
-}
