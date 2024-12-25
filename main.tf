@@ -16,7 +16,8 @@ resource "aws_instance" "web_server" {
   EOF
 
   tags = {
-    Name = "cv-challenge02-server"
+    Name = "cv-challenge03-server"
+    Environment = "Dev"
   }
 
 }
@@ -31,7 +32,7 @@ resource "aws_eip_association" "eip_assoc" {
 resource "local_file" "ansible_inventory" {
   content  = <<-EOF
     [web_servers]
-    ${var.eip != null ? aws_eip_association.eip_assoc.public_ip : aws_instance.web_server.public_ip} ansible_user=ubuntu ansible_ssh_private_key_file=devops_challenge.pem
+    ${var.eip != null ? aws_eip_association.eip_assoc.public_ip : aws_instance.web_server.public_ip} ansible_user=ubuntu ansible_ssh_private_key_file=${var.ec2_key_path}
   EOF
   filename = "${path.module}/inventory.ini"
   file_permission = 0644
@@ -39,7 +40,7 @@ resource "local_file" "ansible_inventory" {
   provisioner "local-exec" {
     command = <<-EOF
       aws ec2 wait instance-status-ok --instance-ids ${aws_instance.web_server.id} 
-      ansible-playbook -i inventory.ini -e "APP_SERVER_NAME=${var.domain_name}" ansible/deploy.yml
+      ansible-playbook -i inventory.ini ansible/deploy_monitoring_stack.yml
     EOF 
   }
 }

@@ -1,0 +1,10 @@
+- name: Ensure Docker Exists
+  script:
+    cmd: "install-docker.sh"
+  become: yes
+
+- name: Ensure parent directory exist
+  file:
+    path: "/home/ubuntu/app"
+    state: directory
+    mode: "0755"

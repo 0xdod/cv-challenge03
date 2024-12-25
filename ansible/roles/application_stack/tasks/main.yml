@@ -1,14 +1,3 @@
-- name: Ensure Docker Exists
-  script:
-    cmd: "install-docker.sh"
-  become: yes
-
-- name: Ensure parent directory exist
-  file:
-    path: "/home/ubuntu/app"
-    state: directory
-    mode: "0755"
-
 - name: Copy files
   copy:
     src: "{{ item.src }}"
@@ -16,16 +5,6 @@
   loop:
     - src: "docker-compose.app.yml"
       dest: "docker-compose.app.yml"
-    - src: "docker-compose.monitoring.yml"
-      dest: "docker-compose.monitoring.yml"
-    - src: "prometheus.yml"
-      dest: "prometheus.yml"
-    - src: "loki-config.yml"
-      dest: "loki-config.yml"
-    - src: "promtail-config.yml"
-      dest: "promtail-config.yml"
-    - src: "grafana.ini"
-      dest: "grafana.ini"
     - src: "nginx"
       dest: "."
     - src: "renew-cert.sh"
@@ -35,7 +14,6 @@
   copy:
     dest: "/home/ubuntu/app/.env"
     content: |
-      export COMPOSE_FILE=docker-compose.app.yml:docker-compose.monitoring.yml
       export APP_SERVER_NAME="{{ APP_SERVER_NAME }}"
     mode: 0644
 
@@ -47,7 +25,7 @@
     chdir: "/home/ubuntu/app"
 
 - name: Start Docker Containers
-  command: docker-compose up -d
+  command: docker-compose up -f docker-compose.app.yml -d
   become: yes
   args:
     chdir: "/home/ubuntu/app"
