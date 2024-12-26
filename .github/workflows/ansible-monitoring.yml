@@ -1,18 +1,17 @@
 name: Deploy monitoring stack with anisble
 on:
   workflow_run:
-    workflows:
-      - "Terraform Apply"
-    types:
-      - completed
+    workflows: [Terraform Apply]
+    types: [completed]
+    branches: [infra_main]
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
       - name: checkout PR branch
         uses: actions/checkout@v4
-        with:
-          ref: ${{ github.event.workflow_run.head_branch }}
+
       - name: Install Ansible
         shell: bash
         run: |
