@@ -36,8 +36,8 @@ jobs:
           path: ./output
       - name: Run ansible playbook
         run: |
-          instance_id=$(cat ./output/instance_id.txt)
           public_ip=$(cat ./output/public_ip.txt)
+          instance_id=$(cat ./output/instance_id.txt)
           echo "Instance ID: $instance_id"
           echo "Public IP: $public_ip"
           printf "[web_servers]\n$public_ip ansible_user=ubuntu ansible_ssh_private_key_file=ec2-key.pem" > inventory.ini
