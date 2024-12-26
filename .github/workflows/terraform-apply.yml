@@ -1,4 +1,4 @@
-name: Terraform Apply
+name: "Terraform Apply"
 
 on:
   push:
@@ -38,7 +38,7 @@ jobs:
           terraform output public_ip > public_ip.txt
 
       - name: Upload Terraform Output
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: terraform-output
           path: |
