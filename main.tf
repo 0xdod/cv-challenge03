@@ -1,3 +1,15 @@
+terraform { 
+  backend "remote" { 
+    
+    organization = "0xdod_org" 
+
+    workspaces { 
+      name = "0xdod_wrkspc" 
+    } 
+  } 
+}
+
+
 resource "aws_instance" "web_server" {
   ami                         = var.ami
   instance_type               = "t2.micro"

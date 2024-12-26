@@ -23,6 +23,8 @@ jobs:
 
       - name: setup terraform
         uses: hashicorp/setup-terraform@v3
+        with:
+          cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
 
       - name: terraform init
         id: init
@@ -38,6 +40,7 @@ jobs:
           terraform output public_ip > public_ip.txt
 
       - name: Upload Terraform Output
+        id: upload
         uses: actions/upload-artifact@v4
         with:
           name: terraform-output
