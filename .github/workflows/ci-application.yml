@@ -20,20 +20,20 @@ jobs:
       - name: Build Docker images
         run: |
           echo "IMAGE_TAG=${GITHUB_SHA::8}" >> $GITHUB_ENV
-          echo "BACKEND_REPO=0xdod/cv-challenge01-backend:${IMAGE_TAG}" >> $GITHUB_ENV
-          echo "FRONTEND_REPO=0xdod/cv-challenge01-frontend:${IMAGE_TAG}" >> $GITHUB_ENV
-          docker build -f Dockerfile.frontend -t "${FRONTEND_REPO}" .
-          docker build -f Dockerfile.backend -t "${BACKEND_REPO}" .
+          echo "BACKEND_REPO=cv-challenge01-backend:${IMAGE_TAG}" >> $GITHUB_ENV
+          echo "FRONTEND_REPO=cv-challenge01-frontend:${IMAGE_TAG}" >> $GITHUB_ENV
+          docker build -f Dockerfile.frontend -t "0xdod/${FRONTEND_REPO}" .
+          docker build -f Dockerfile.backend -t "0xdod/${BACKEND_REPO}" .
 
       - name: Push Docker images
         run: |
-          docker push "${BACKEND_REPO}"
-          docker push "${FRONTEND_REPO}"
+          docker push "0xdod/${BACKEND_REPO}"
+          docker push "0xdod/${FRONTEND_REPO}"
 
       - name: Update docker-compose.yml with the new tags
         run: |
-          sed -i "s|image: 0xdod/.*-frontend.*|image: ${FRONTEND_REPO}|" ansible/roles/application_stack/files/docker-compose.app.yml
-          sed -i "s|image: 0xdod/.*-backend.*|image: ${BACKEND_REPO}|" ansible/roles/application_stack/files/docker-compose.app.yml
+          sed -i "s|image: 0xdod/.*-frontend.*|image: 0xdod/${FRONTEND_REPO}|" ansible/roles/application_stack/files/docker-compose.app.yml
+          sed -i "s|image: 0xdod/.*-backend.*|image: 0xdod/${BACKEND_REPO}|" ansible/roles/application_stack/files/docker-compose.app.yml
 
       - name: Commit and push changes
         run: |
