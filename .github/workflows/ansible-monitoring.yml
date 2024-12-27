@@ -57,7 +57,7 @@ jobs:
             fs.writeFileSync(path.join(temp, 'output.zip'), Buffer.from(download.data));
 
       - name: "Unzip artifact"
-        run: unzip output.zip -d "${{ runner.temp }}/artifacts"
+        run: unzip "${{ runner.temp }}/artifacts/output.zip" -d $GITHUB_WORKSPACE
 
       - name: Run ansible playbook
         run: |
