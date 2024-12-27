@@ -7,6 +7,10 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      BACKEND_REPO: ${{ secrets.DOCKER_USERNAME }}/cv-challenge01-backend
+      FRONTEND_REPO: ${{ secrets.DOCKER_USERNAME }}/cv-challenge01-frontend
+      IMAGE_TAG: ${{ github.run_number }}
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
@@ -19,21 +23,18 @@ jobs:
 
       - name: Build Docker images
         run: |
-          echo "IMAGE_TAG=${GITHUB_RUN_ID}" >> $GITHUB_ENV
-          echo "BACKEND_REPO=cv-challenge01-backend:${IMAGE_TAG}" >> $GITHUB_ENV
-          echo "FRONTEND_REPO=cv-challenge01-frontend:${IMAGE_TAG}" >> $GITHUB_ENV
-          docker build -f Dockerfile.frontend -t ${{ secrets.DOCKER_USERNAME }}/${FRONTEND_REPO} .
-          docker build -f Dockerfile.backend -t ${{ secrets.DOCKER_USERNAME }}/${BACKEND_REPO} .
+          docker build -f Dockerfile.frontend -t $FRONTEND_REPO:$IMAGE_TAG .
+          docker build -f Dockerfile.backend -t $BACKEND_REPO:$IMAGE_TAG .
 
       - name: Push Docker images
         run: |
-          docker push ${{ secrets.DOCKER_USERNAME }}/${BACKEND_REPO}
-          docker push ${{ secrets.DOCKER_USERNAME }}/${FRONTEND_REPO}
+          docker push $BACKEND_REPO
+          docker push $FRONTEND_REPO
 
       - name: Update docker-compose.yml with the new tags
         run: |
-          sed -i "s|image: ${{ secrets.DOCKER_USERNAME }}/.*-frontend.*|image: ${{ secrets.DOCKER_USERNAME }}/${FRONTEND_REPO}|" ansible/roles/application_stack/files/docker-compose.app.yml
-          sed -i "s|image: ${{ secrets.DOCKER_USERNAME }}/.*-backend.*|image: ${{ secrets.DOCKER_USERNAME }}/${BACKEND_REPO}|" ansible/roles/application_stack/files/docker-compose.app.yml
+          sed -i "s|image: ${{ secrets.DOCKER_USERNAME }}/.*-frontend.*|image: $FRONTEND_REPO|" ansible/roles/application_stack/files/docker-compose.app.yml
+          sed -i "s|image: ${{ secrets.DOCKER_USERNAME }}/.*-backend.*|image: $BACKEND_REPO|" ansible/roles/application_stack/files/docker-compose.app.yml
 
       - name: Commit and push changes
         run: |
