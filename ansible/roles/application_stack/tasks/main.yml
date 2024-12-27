@@ -21,6 +21,7 @@
   script:
     cmd: "init-certbot.sh"
   become: yes
+  become_user: ubuntu
   args:
     chdir: "/home/ubuntu/app"
 
