@@ -29,15 +29,40 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
+
       - name: Download Terraform Output
-        uses: actions/download-artifact@v4
+        uses: actions/github-script@v6
         with:
-          name: terraform-output
-          path: ./output
+          script: |
+            let allArtifacts = await github.rest.actions.listWorkflowRunArtifacts({
+             owner: context.repo.owner,
+             repo: context.repo.repo,
+             run_id: context.payload.workflow_run.id,
+            });
+            let matchArtifact = allArtifacts.data.artifacts.filter((artifact) => {
+              return artifact.name == "terraform-output"
+            })[0];
+            let download = await github.rest.actions.downloadArtifact({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              artifact_id: matchArtifact.id,
+              archive_format: 'zip',
+            });
+            const fs = require('fs');
+            const path = require('path');
+            const temp = '${{ runner.temp }}/artifacts';
+            if (!fs.existsSync(temp)){
+              fs.mkdirSync(temp);
+            }
+            fs.writeFileSync(path.join(temp, 'output.zip'), Buffer.from(download.data));
+
+      - name: "Unzip artifact"
+        run: unzip output.zip -d "${{ runner.temp }}/artifacts"
+
       - name: Run ansible playbook
         run: |
-          public_ip=$(cat ./output/public_ip.txt)
-          instance_id=$(cat ./output/instance_id.txt)
+          public_ip=$(cat ./public_ip.txt)
+          instance_id=$(cat ./instance_id.txt)
           echo "Instance ID: $instance_id"
           echo "Public IP: $public_ip"
           printf "[web_servers]\n$public_ip ansible_user=ubuntu ansible_ssh_private_key_file=ec2-key.pem" > inventory.ini
