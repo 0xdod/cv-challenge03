@@ -1,12 +1,12 @@
 services:
   frontend:
-    image: 0xdod/cv-challenge01-frontend:11
+    image: 0xdod/cv-challenge01-frontend:12
     restart: unless-stopped
     networks:
       - app_network
 
   backend:
-    image: 0xdod/cv-challenge01-backend:11
+    image: 0xdod/cv-challenge01-backend:12
     restart: unless-stopped
     networks:
       - app_network
