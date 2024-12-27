@@ -21,20 +21,17 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Build Docker images
+      - name: Build and Push Docker images
         run: |
           docker build -f Dockerfile.frontend -t $FRONTEND_REPO:$IMAGE_TAG .
           docker build -f Dockerfile.backend -t $BACKEND_REPO:$IMAGE_TAG .
-
-      - name: Push Docker images
-        run: |
-          docker push $BACKEND_REPO
-          docker push $FRONTEND_REPO
+          docker push ${BACKEND_REPO}:${IMAGE_TAG}
+          docker push ${FRONTEND_REPO}:${IMAGE_TAG}
 
       - name: Update docker-compose.yml with the new tags
         run: |
-          sed -i "s|image: ${{ secrets.DOCKER_USERNAME }}/.*-frontend.*|image: $FRONTEND_REPO|" ansible/roles/application_stack/files/docker-compose.app.yml
-          sed -i "s|image: ${{ secrets.DOCKER_USERNAME }}/.*-backend.*|image: $BACKEND_REPO|" ansible/roles/application_stack/files/docker-compose.app.yml
+          sed -i "s|image: ${{ secrets.DOCKER_USERNAME }}/.*-frontend.*|image: ${FRONTEND_REPO}:${IMAGE_TAG}|" ansible/roles/application_stack/files/docker-compose.app.yml
+          sed -i "s|image: ${{ secrets.DOCKER_USERNAME }}/.*-backend.*|image: ${BACKEND_REPO}:${IMAGE_TAG}|" ansible/roles/application_stack/files/docker-compose.app.yml
 
       - name: Commit and push changes
         run: |
