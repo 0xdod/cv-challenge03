@@ -14,6 +14,7 @@
   copy:
     dest: "/home/ubuntu/app/.env"
     content: |
+      export COMPOSE_FILE=docker-compose.app.yml
       export APP_SERVER_NAME="{{ APP_SERVER_NAME }}"
     mode: 0644
 
@@ -26,7 +27,7 @@
     chdir: "/home/ubuntu/app"
 
 - name: Start Docker Containers
-  command: docker-compose -f docker-compose.app.yml up -d
+  command: docker-compose up -d
   become: yes
   args:
     chdir: "/home/ubuntu/app"

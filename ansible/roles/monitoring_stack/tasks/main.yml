@@ -15,7 +15,7 @@
       dest: "grafana.ini"
 
 - name: Start Docker Containers
-  command: docker-compose -f docker-compose.monitoring.yml up -d
+  command: "COMPOSE_FILE=docker-compose.monitoring.yml docker-compose up -d"
   become: yes
   args:
     chdir: "/home/ubuntu/app"
