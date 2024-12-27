@@ -24,6 +24,9 @@ jobs:
           chmod 400 ec2-key.pem
 
       - name: Run ansible playbook
+        env:
+          PUBLIC_IP: ${{ secrets.PUBLIC_IP }}
+          DOMAIN_NAME: ${{ secrets.DOMAIN_NAME }}
         run: |
-          printf "[web_servers]\n${{ secrets.PUBLIC_IP }} ansible_user=ubuntu ansible_ssh_private_key_file=ec2-key.pem" > inventory.ini
-          ansible-playbook -i inventory.ini -e APP_SERVER_NAME=${{ secrets.DOMAIN_NAME }} ansible/deploy_application_stack.yml
+          printf "[web_servers]\n$PUBLIC_IP ansible_user=ubuntu ansible_ssh_private_key_file=ec2-key.pem" > inventory.ini
+          ansible-playbook -i inventory.ini -e "APP_SERVER_NAME=$DOMAIN_NAME" ansible/deploy_application_stack.yml
