@@ -1,5 +1,5 @@
 terraform { 
-  backend "remote" { 
+  cloud { 
     
     organization = "0xdod_org" 
 
