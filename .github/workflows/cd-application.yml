@@ -1,0 +1,29 @@
+name: CD
+
+on:
+  push:
+    branches:
+      - deployment
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout PR
+        uses: actions/checkout@v4
+
+      - name: Install Ansible
+        shell: bash
+        run: |
+          sudo apt update
+          sudo apt install -y ansible
+
+      - name: Decode and Save PEM File
+        run: |
+          echo "${{ secrets.EC2_SSH_KEY }}" | base64 --decode > ec2-key.pem
+          chmod 400 ec2-key.pem
+
+      - name: Run ansible playbook
+        run: |
+          printf "[web_servers]\n${{ secrets.PUBLIC_IP }} ansible_user=ubuntu ansible_ssh_private_key_file=ec2-key.pem" > inventory.ini
+          ansible-playbook -i inventory.ini -e APP_SERVER_NAME=${{ secrets.DOMAIN_NAME }} ansible/deploy_application_stack.yml
