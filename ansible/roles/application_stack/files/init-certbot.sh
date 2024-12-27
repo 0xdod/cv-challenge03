@@ -4,7 +4,7 @@ domains=("$APP_SERVER_NAME" "www.$APP_SERVER_NAME" "db.$APP_SERVER_NAME")
 email="damiloladolor+certbot@gmail.com"
 rsa_key_size=4096
 data_path="./certbot"
-base_path="~/app"
+base_path="$HOME/app"
 
 cd "$base_path"
 
